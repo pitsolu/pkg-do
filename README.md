@@ -31,7 +31,7 @@ composer exec publish-strukt-do
 composer exec config-do
 ```
 
-### DB Configuration File
+### Database Configuration File
 
 ```
 cfg/
