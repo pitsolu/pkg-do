@@ -10,7 +10,11 @@ Strukt Do
 
 Project `strukt/do` is a `strukt` module.
 
-`strukt/do` merges of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
+`strukt/do` merges:
+
+* [doctrine-orm](https://github.com/doctrine/doctrine2), 
+* [doctrine-migrations](https://github.com/doctrine/migrations)
+* [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
 
 
 ### Prerequisite
