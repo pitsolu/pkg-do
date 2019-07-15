@@ -8,6 +8,18 @@ Strukt Do
 
 `strukt-do` is the merging of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
 
+## Getting Started
+
+Install `strukt/strukt` framework, see [strukt-strukt](https://github.com/pitsolu/strukt-strukt) then install `strukt/do`
+
+```
+composer require strukt/do
+composer exec publish-strukt-do
+composer exec config-do
+```
+
+You now ready to go!
+
 ### DB Configuration File
 
 ```
