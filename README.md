@@ -6,11 +6,20 @@ Strukt Do
 [![Latest Unstable Version](https://poser.pugx.org/strukt/do/v/unstable)](https://packagist.org/packages/strukt/do)
 [![License](https://poser.pugx.org/strukt/do/license)](https://packagist.org/packages/strukt/do)
 
-`strukt-do` is the merging of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
-
 ## Getting Started
 
-Install `strukt/strukt` framework, see [strukt-strukt](https://github.com/pitsolu/strukt-strukt) then install `strukt/do`
+Project `strukt/do` is a `strukt` module.
+
+`strukt-do` merges of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
+
+
+### Prerequisite
+
+Install `strukt/strukt` framework via [strukt-strukt](https://github.com/pitsolu/strukt-strukt)
+
+### Installation
+
+Install, publish and create configuration for `strukt/do`:
 
 ```
 composer require strukt/do
@@ -30,7 +39,7 @@ cfg/
 ### Console commands
 
 Listing console commands: 
-
+	
 ```sh
 ./console -l
 ```
@@ -54,7 +63,7 @@ Doctrine
  sql:exec           Doctrine Run SQL
 ```
 
-### Drop into shell
+### Shell
 
 `strukt-do` uses [psysh](https://github.com/bobthecow/psysh).
 
