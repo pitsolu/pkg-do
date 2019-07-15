@@ -66,7 +66,7 @@ Doctrine
 
 ### Shell
 
-`strukt/do` uses [psysh](https://github.com/bobthecow/psysh).
+`strukt/do` console is [psysh](https://github.com/bobthecow/psysh).
 
 ```sh
 $ ./console shell:exec
