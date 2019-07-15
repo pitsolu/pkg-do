@@ -34,14 +34,14 @@ cfg/
 └── db.ini
 ```
 
-### Console commands
+### Console
 
-Listing console commands: 
+List the console commands: 
 	
 ```sh
 ./console -l
 ```
-Commands available in `strukt/do` as listed below:
+Commands available in `strukt/do`:
 
 ```sh
 Strukt
