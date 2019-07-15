@@ -68,8 +68,15 @@ Doctrine
 
 `strukt/do` console is [psysh](https://github.com/bobthecow/psysh).
 
+Run console:
+
 ```sh
-$ ./console shell:exec
+./console shell:exec
+```
+
+Example: 
+
+```sh
 >>> ls
 Variables: $core, $da, $registry
 >>> $core->get("au.ctr.User")->getAll()
