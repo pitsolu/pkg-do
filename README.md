@@ -10,12 +10,12 @@ Strukt Do
 
 Project `strukt/do` is a `strukt` module.
 
-`strukt-do` merges of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
+`strukt/do` merges of [doctrine-orm](https://github.com/doctrine/doctrine2), [doctrine-migrations](https://github.com/doctrine/migrations) and [strukt-strukt](https://github.com/pitsolu/strukt-strukt) together.
 
 
 ### Prerequisite
 
-Install `strukt/strukt` framework via [strukt-strukt](https://github.com/pitsolu/strukt-strukt)
+Install `strukt/strukt` framework via [strukt-strukt](https://github.com/pitsolu/strukt-strukt).
 
 ### Installation
 
@@ -26,8 +26,6 @@ composer require strukt/do
 composer exec publish-strukt-do
 composer exec config-do
 ```
-
-You now ready to go!
 
 ### DB Configuration File
 
@@ -43,8 +41,7 @@ Listing console commands:
 ```sh
 ./console -l
 ```
-
-There are 2 sets of commands available in `strukt-do` as listed below:
+Commands available in `strukt/do` as listed below:
 
 ```sh
 Strukt
@@ -65,7 +62,7 @@ Doctrine
 
 ### Shell
 
-`strukt-do` uses [psysh](https://github.com/bobthecow/psysh).
+`strukt/do` uses [psysh](https://github.com/bobthecow/psysh).
 
 ```sh
 $ ./console shell:exec
