@@ -12,6 +12,6 @@ Strukt\Fs::cpr(sprintf("%s/database", $pkg_dir), sprintf("%s/database", $app_roo
 Strukt\Fs::rename(sprintf("%s/console", $app_root), sprintf("%s/console~", $app_root));
 copy(sprintf("%s/console", $pkg_dir), sprintf("%s/console", $app_root));
 Strukt\Fs::rename(sprintf("%s/index.php", $app_root), sprintf("%s/index.php~", $app_root));
-copy(sprintf("%s/index.php", $pkg_dir), sprintf("%s/console", $app_root));
+copy(sprintf("%s/index.php", $pkg_dir), sprintf("%s/index.php", $app_root));
 Strukt\Fs::rename(sprintf("%s/bootstrap.php", $app_root), sprintf("%s/bootstrap.php~", $app_root));
-copy(sprintf("%s/bootstrap.php", $pkg_dir), sprintf("%s/console", $app_root));
+copy(sprintf("%s/bootstrap.php", $pkg_dir), sprintf("%s/bootstrap", $app_root));
