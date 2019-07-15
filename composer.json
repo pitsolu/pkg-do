@@ -20,5 +20,6 @@
             "email": "pitsolu@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "bin":["bin/publish-strukt-do"]
 }
