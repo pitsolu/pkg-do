@@ -42,6 +42,8 @@ Env::set("entity_ns", App\Contract\Entity::class);
 Env::set("seeder_sgf", "tpl/sgf/database/seeder/Seed/NameVer.sgf");
 Env::set("seeder_dir", "database/seeder/Seed");
 Env::set("seeder_home", "database/seeder");
+Env::set("logger_name", "Console Logger");
+Env::set("logger_file", "logs/console.log");
 
 $kernel = new RouterKernel(Request::createFromGlobals());
 $kernel->inject("app.dep.logger.sqllogger", function(){
