@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+$app_root = realpath(__DIR__."/../../../../");
+$pkg_dir = realpath(__DIR__."/../");
+
+require(sprintf("%s/vendor/autoload.php", $app_root));
+
+Strukt\Fs::cpr(sprintf("%s/lib", $pkg_dir), $app_root);
+Strukt\Fs::cpr(sprintf("%s/database", $pkg_dir), $app_root);
+Strukt\Fs::rename(sprintf("%s/console", $app_root), sprintf("%s/console~", $app_root));
+Strukt\Fs::cpr(sprintf("%s/console", $pkg_dir), $app_root);
+Strukt\Fs::rename(sprintf("%s/index.php", $app_root), sprintf("%s/index.php~", $app_root));
+Strukt\Fs::cpr(sprintf("%s/index.php", $pkg_dir), $app_root);
+Strukt\Fs::rename(sprintf("%s/bootstrap.php", $app_root), sprintf("%s/bootstrap.php~", $app_root));
+Strukt\Fs::cpr(sprintf("%s/bootstrap.php", $pkg_dir), $app_root);
