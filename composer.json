@@ -3,8 +3,8 @@
     "description": "Strukt + DoctrineORM",
     "type": "strukt-module",
     "require": {
-        "doctrine/orm": "^3.0@dev",
-        "doctrine/migrations": "^2.2@dev",
+        "doctrine/orm": "3.0.x-dev",
+        "doctrine/migrations": "2.2.x-dev",
         "cobaia/monologdoctrine": "dev-master",
         "portphp/spreadsheet": "^1.0@dev",
         "symfony/serializer": "^5.0@dev"
