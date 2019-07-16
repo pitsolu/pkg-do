@@ -68,6 +68,55 @@ class EntityManagerAdapter extends AbstractProvider implements ProviderInterface
 
 				return $this->em()->find($ns, $id);
 			}
+
+			/**
+			* Paginator from {@source naroga/doctrine-paginator-bundle}
+			*
+			* @param Doctrine\ORM\QueryBuilder  $queryBuilder
+			* @param integer $page
+			* @param integer $maxResults
+			*
+			* @return array
+			*/
+			public function paginate(QueryBuilder $queryBuilder, $page = 1, $maxResults = 10){
+
+		        if (strtolower($page) == 'all') {
+
+		            $items = $queryBuilder->getQuery()->getResult();
+		            $total = count($items);
+		            $pages = 1;
+		        } 
+		        else {
+
+		            $totalQueryBuilder = clone $queryBuilder;
+		            $total = $totalQueryBuilder
+		                ->select("COUNT('*')")
+		                ->getQuery()
+		                ->getSingleScalarResult();
+
+		            if ($page !== 'all') {
+
+		                $queryBuilder
+		                    ->setMaxResults($maxResults)
+		                    ->setFirstResult(($page - 1) * $maxResults);
+		            }
+
+		            $items = $queryBuilder
+		                ->getQuery()
+		                ->getArrayResult();
+
+		            $pages = $page === 'all' ? 0 : max(ceil($total/$maxResults), 1);
+		        }
+
+		        return array(
+		        	
+		        	"page"=>$page,
+		        	"pages"=>$pages,
+					"rows"=>$total,
+					"no_items"=>count($items),
+					"items"=>$items
+		    	);
+			}
 		});
 	}
 }
