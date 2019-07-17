@@ -10,4 +10,14 @@ abstract class AbstractCommand extends \Strukt\Console\Command{
 
 		return Registry::getInstance();
 	}
+
+	protected function get($alias, Array $args = null){
+
+		$core = $this->core()->get("core");
+
+		if(!empty($args))
+			return $core->getNew($alias, $args);
+
+		return $core->get($alias);
+	}
 }
