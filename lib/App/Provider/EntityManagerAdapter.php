@@ -5,6 +5,7 @@ namespace App\Provider;
 use Strukt\Contract\AbstractProvider;
 use Strukt\Contract\AbstractService;
 use Strukt\Contract\ProviderInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class EntityManagerAdapter extends AbstractProvider implements ProviderInterface{
 

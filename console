@@ -12,6 +12,7 @@ use Strukt\Framework\Provider\Annotation as AnnotationProvider;
 use App\Provider\EntityManager as EntityManagerProvider;
 use App\Provider\EntityManagerAdapter as EntityManagerAdapterProvider;
 use App\Provider\Normalizer as NormalizerProvider;
+use App\Provider\Logger as LoggerProvider;
 use App\Loader as AppLoader;
 use App\Command\Doctrine\GenerateModels as GenerateModelsCommand;
 use App\Command\Doctrine\Migration\GenerateMigration as GenerateMigrationCommand;
@@ -53,6 +54,7 @@ $kernel->inject("app.dep.logger.sqllogger", function(){
 
 $kernel->providers(array(
 
+	LoggerProvider::class,
 	EntityManagerProvider::class,
 	EntityManagerAdapterProvider::class,
 	RouterProvider::class,

@@ -21,11 +21,11 @@ class Normalizer extends AbstractProvider implements ProviderInterface{
 			public function toArray($obj){
 
 				$objNorm = new ObjectNormalizer();
-				$objNorm->setIgnoredAttributes(array(
+				// $objNorm->setIgnoredAttributes(array(
 
-					'__initializer__',
-					'__isInitialized__', 
-					'__cloner__'));
+				// 	'__initializer__',
+				// 	'__isInitialized__', 
+				// 	'__cloner__'));
 
 				$dateNorm = new DateTimeNormalizer();
 
