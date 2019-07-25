@@ -44,7 +44,8 @@ foreach($manifest_files as $file){
 			rename($o_file, sprintf("%s~", $o_file));
 		}
 
-		$content = str_replace("__APP__", $cfg["app-name"], Fs::cat($p_file));
+		$content = Fs::cat($p_file);
+		// $content = str_replace("__APP__", $cfg["app-name"], Fs::cat($p_file));
 		$file = new SplFileObject($o_file, "w+"); 
 		$file->fwrite($content);
 	}
