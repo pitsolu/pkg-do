@@ -8,9 +8,7 @@ Strukt Do
 
 ## Getting Started
 
-Project `strukt/do` is a `strukt` module.
-
-`strukt/do` utilizes:
+Project `strukt/do` is a `strukt` module. `strukt/do` utilizes:
 
 * [doctrine-orm](https://github.com/doctrine/doctrine2)
 * [doctrine-migrations](https://github.com/doctrine/migrations)
