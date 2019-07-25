@@ -29,6 +29,7 @@ Install, publish and create configuration for `strukt/do`:
 composer require strukt/do
 composer exec publish-strukt-do
 composer exec config-do
+chmod +x console
 ```
 
 ### Database Configuration File
