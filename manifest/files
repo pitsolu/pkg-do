@@ -4,7 +4,6 @@
 ./database/seeder/Seed/Role20180626221244.php
 ./index.php
 ./console
-./README.md
 ./lib/App/Provider/EntityManager.php
 ./lib/App/Provider/Logger.php
 ./lib/App/Provider/EntityManagerAdapter.php
