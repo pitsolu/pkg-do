@@ -1,9 +1,6 @@
-bootstrap.php
 database/schema/Schema/Migration/Version20170630235421.php
 database/seeder/Seed/User20180626221519.php
 database/seeder/Seed/Role20180626221244.php
-index.php
-console
 lib/App/Provider/EntityManager.php
 lib/App/Provider/Logger.php
 lib/App/Provider/EntityManagerAdapter.php
