@@ -43,10 +43,10 @@ class SeederExec extends \Strukt\Console\Command{
 			}, explode("_", $name)));
 
 			// $seeders = glob(sprintf("database/seeder/Seed/%s*", $name));
-			$seeders = glob(sprintf("%s/%s*", Env::get("seeder_dir"), $name));
+			$seeders = glob(sprintf("%s/%s*.php", Env::get("seeder_dir"), $name));
 		}
 		else
-			$seeders = glob(sprintf("%s/*", Env::get("seeder_dir")));
+			$seeders = glob(sprintf("%s/*.php", Env::get("seeder_dir")));
 
 		foreach($seeders as $seeder){
 
