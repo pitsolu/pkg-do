@@ -9,26 +9,29 @@ use Strukt\Router\Kernel as RouterKernel;
 use Strukt\Router\Middleware\Router as RouterMiddleware;
 use Strukt\Framework\Provider\Router as RouterProvider;
 use Strukt\Framework\Provider\Annotation as AnnotationProvider;
+use App\Loader as AppLoader;
+
 use App\Provider\EntityManager as EntityManagerProvider;
 use App\Provider\EntityManagerAdapter as EntityManagerAdapterProvider;
 use App\Provider\Normalizer as NormalizerProvider;
 use App\Provider\Logger as LoggerProvider;
-use App\Loader as AppLoader;
 use App\Command\Doctrine\GenerateModels as GenerateModelsCommand;
 use App\Command\Doctrine\Migration\GenerateMigration as GenerateMigrationCommand;
 use App\Command\Doctrine\Seeder\GenerateSeeder as GenerateSeederCommand;
 use App\Command\Doctrine\Migration\MigrateExec as MigrateExecCommand;
 use App\Command\Doctrine\Seeder\SeederExec as SeederExecCommand;
 use App\Command\Doctrine\SqlExec as SqlExecCommand;
+use App\Command\PhpUnit as PhpUnitCommand;
 
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Cobaia\Doctrine\MonologSQLLogger;
 
 require "bootstrap.php";
 
-Env::set("is_dev", true);
 Env::set("root_dir", getcwd());
 Env::set("rel_appsrc_dir", "app/src/");
-Env::set("rel_db_ini", "cfg/db.ini");
 Env::set("rel_app_ini", "cfg/app.ini");
 Env::set("rel_mod_ini", "cfg/module.ini");
 Env::set("rel_tplapp_dir", "tpl/sgf/app/");
@@ -36,6 +39,9 @@ Env::set("rel_tplappsrc_dir", "tpl/sgf/app/src/");
 Env::set("rel_tplauthmod_dir","tpl/sgf/app/src/App/AuthModule/");
 Env::set("rel_app_lib", "lib/App");
 Env::set("rel_loader_sgf","tpl/sgf/lib/App/Loader.sgf");
+
+Env::set("is_dev", true);
+Env::set("rel_db_ini", "cfg/db.ini");
 Env::set("migration_sgf","tpl/sgf/database/schema/Schema/Migration/Version_.sgf");
 Env::set("migration_home","database/schema/Schema/Migration");
 Env::set("migration_ns", Schema\Migration::class);
@@ -44,12 +50,21 @@ Env::set("seeder_sgf", "tpl/sgf/database/seeder/Seed/NameVer.sgf");
 Env::set("seeder_dir", "database/seeder/Seed");
 Env::set("seeder_home", "database/seeder");
 Env::set("logger_name", "Console Logger");
-Env::set("logger_file", "logs/console.log");
+
+$now = new DateTime("now");
+Env::set("logger_file", sprintf("logs/cli-%s.log", $now->format("Y-m-d")));
 
 $kernel = new RouterKernel(Request::createFromGlobals());
-$kernel->inject("app.dep.logger.sqllogger", function(){
 
-	return new MonologSQLLogger(null, null, __DIR__ . '/logs/');
+$kernel->inject("app.dep.logger.sqllogger", function() use($now){
+
+	$logfile = sprintf("/logs/doctrine-cli-%s.log", $now->format("Y-m-d"));
+
+	$handler = new StreamHandler(__DIR__ . $logfile, Logger::DEBUG);
+
+	$logger = new Logger("doctrine-logger-cli");
+
+	return new MonologSQLLogger($logger, $handler);
 });
 
 $kernel->providers(array(
@@ -57,9 +72,9 @@ $kernel->providers(array(
 	LoggerProvider::class,
 	EntityManagerProvider::class,
 	EntityManagerAdapterProvider::class,
+	NormalizerProvider::class,
 	RouterProvider::class,
-	AnnotationProvider::class,
-	NormalizerProvider::class
+	AnnotationProvider::class
 ));
 
 $kernel->middlewares(array(
@@ -70,9 +85,9 @@ $kernel->middlewares(array(
 try{
 	
 	if(!class_exists(AppLoader::class))
-		throw new Exception(sprintf("%s does not exist!", AppLoader::class));
+		throw new Exception(sprintf("%s does not exixst!", AppLoader::class));
 	
-	$loader = new AppLoader($kernel); 
+	$loader = new AppLoader($kernel);
 	$app = $loader->getApp();
 
 	$moduleList = $app->getModuleList();
@@ -94,8 +109,8 @@ $configs = array(
 	"rootDir"=>__DIR__
 );
 
-$console = new Strukt\Console($configs);
-// $console->add(new \App\Command\ShellExec());
+$console = new Console($configs);
+
 $console->addCmdSect("\nDoctrine");
 $console->add(new GenerateModelsCommand());
 $console->add(new GenerateMigrationCommand());
@@ -103,5 +118,7 @@ $console->add(new GenerateSeederCommand());
 $console->add(new MigrateExecCommand());
 $console->add(new SeederExecCommand());
 $console->add(new SqlExecCommand());
+$console->addCmdSect("\nPhpUnit");
+$console->add(new PhpUnitCommand());
 
 exit($console->run($_SERVER["argv"]));

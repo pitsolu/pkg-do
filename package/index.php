@@ -1,9 +1,10 @@
 <?php
 
+require "bootstrap.php";
+
 use Strukt\Http\Response;
 use Strukt\Http\Request;
 use Strukt\Http\RedirectResponse;
-use Strukt\Http\JsonResponse;
 use Strukt\Http\Session;
 
 use Strukt\Router\Middleware\ExceptionHandler;
@@ -12,59 +13,59 @@ use Strukt\Router\Middleware\Authorization;
 use Strukt\Router\Middleware\StaticFileFinder;
 use Strukt\Router\Middleware\Session as SessionMiddleware;
 use Strukt\Router\Middleware\Router as RouterMiddleware;
+// use App\Middleware\Cors as CorsMiddleware;
 
 use Strukt\Framework\Provider\Validator as ValidatorProvider;
 use Strukt\Framework\Provider\Annotation as AnnotationProvider;
 use Strukt\Framework\Provider\Router as RouterProvider;
+
 use App\Provider\Logger as LoggerProvider;
 use App\Provider\EntityManager as EntityManagerProvider;
 use App\Provider\EntityManagerAdapter as EntityManagerAdapterProvider;
 use App\Provider\Normalizer as NormalizerProvider;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Cobaia\Doctrine\MonologSQLLogger;
+
 use Strukt\Event\Event;
 use Strukt\Env;
 
-use Cobaia\Doctrine\MonologSQLLogger;
-
-ini_set('display_errors', '1');
-ini_set("date.timezone", "Africa/Nairobi");
-
-error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
-
-$appCfg = parse_ini_file("cfg/app.ini");
-
-$loader = require 'vendor/autoload.php';
-$loader->add('App', __DIR__.'/lib/');
-$loader->add('Seed', __DIR__.'/database/seeder/');
-$loader->add($appCfg["app-name"], __DIR__.'/app/src/');
-
-Env::set("is_dev", true);
 Env::set("root_dir", getcwd());
-Env::set("rel_appsrc_dir", "app/src/");
-Env::set("rel_static_dir", "/public/static");
 Env::set("rel_app_ini", "/cfg/app.ini");
+Env::set("rel_static_dir", "/public/static");
 Env::set("rel_mod_ini", "/cfg/module.ini");
+Env::set("is_dev", true);
+
+Env::set("rel_appsrc_dir", "app/src/");
 Env::set("rel_db_ini", "cfg/db.ini");
 Env::set("logger_name", "Strukt Logger");
-Env::set("logger_file", "logs/app.log");
+
+$now = new DateTime("now");
+Env::set("logger_file", sprintf("logs/app-%s.log", $now->format("Y-m-d")));
 
 $kernel = new Strukt\Router\Kernel(Request::createFromGlobals());
-$kernel->inject("app.dep.author", function(){
+
+$kernel->inject("app.dep.logger.sqllogger", function() use($now){
+
+	$logfile = sprintf("/logs/doctrine-%s.log", $now->format("Y-m-d"));
+
+	$handler = new StreamHandler(__DIR__ . $logfile, Logger::DEBUG);
+
+	$logger = new Logger("doctrine-logger");
+
+	return new MonologSQLLogger($logger, $handler);
+});
+
+$kernel->inject("app.dep.author", function(Session $session){
 
 	return array(
 
-		"permissions" => array(
-
-			// "show_secrets"
-		)
+		//show_secrets
 	);
 });
 
-$kernel->inject("app.dep.logger.sqllogger", function(){
-
-	return new MonologSQLLogger(null, null, __DIR__ . '/logs/');
-});
-
+/**/ //strukt-strukt//
 $kernel->inject("app.dep.authentic", function(Session $session){
 
 	$user = new Strukt\User();
@@ -72,6 +73,7 @@ $kernel->inject("app.dep.authentic", function(Session $session){
 
 	return $user;
 });
+/**/ //strukt-strukt//
 
 $kernel->inject("app.dep.session", function(){
 
@@ -80,10 +82,10 @@ $kernel->inject("app.dep.session", function(){
 
 $kernel->providers(array(
 
-	LoggerProvider::class,
 	ValidatorProvider::class,
 	AnnotationProvider::class,
 	RouterProvider::class,
+	LoggerProvider::class,
 	EntityManagerProvider::class,
 	EntityManagerAdapterProvider::class,
 	NormalizerProvider::class
@@ -91,14 +93,15 @@ $kernel->providers(array(
 
 $kernel->middlewares(array(
 	
+	
 	ExceptionHandler::class,
 	SessionMiddleware::class,
 	Authorization::class,
 	Authentication::class,
-	StaticFileFinder::class,
-	RouterMiddleware::class
+	// CorsMiddleware::class,
+	RouterMiddleware::class,
 ));
 
 $loader = new App\Loader($kernel);
-$app = $loader->getApp();
+$app = $loader->getApp(); 
 $app->runDebug();

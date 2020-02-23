@@ -9,18 +9,22 @@ use Strukt\Console\Output;
 * sql:exec  Doctrine Run SQL
 * 
 * Usage:
-*	
-*      sql:exec <sql>
+*   
+*      sql:exec [--nostyle] <sql> 
 *
 * Arguments:
 *
 *      sql    SQL statement in quotes
+*
+* Options:
+* 
+*      --nostyle -n       Do not apply style
 */
 class SqlExec extends \Strukt\Console\Command{
 
-	public function execute(Input $in, Output $out){
+    public function execute(Input $in, Output $out){
 
-		$registry = \Strukt\Core\Registry::getInstance();
+        $registry = \Strukt\Core\Registry::getInstance();
 
         $conn = $registry->get("app.em")->getConnection();
 
@@ -38,13 +42,18 @@ class SqlExec extends \Strukt\Console\Command{
         // $message = ob_get_clean();
 
         if(is_array($rs))
-        	$rs = json_encode($rs, JSON_PRETTY_PRINT);
+            $rs = json_encode($rs, JSON_PRETTY_PRINT);
         elseif(is_int($rs))
-        	if($rs == 1)
-        		$rs = "Query executed successfully.";
-        	else
-        		$rs = "Query execution was unsuccessful!";
+            if($rs == 1)
+                $rs = "Query executed successfully.";
+            else
+                $rs = "Query execution was unsuccessful!";
 
+        $no_style = $in->get("nostyle");
+
+        if($no_style)
+            exit($rs);
+        
         $out->add($rs);
-	}
+    }
 }

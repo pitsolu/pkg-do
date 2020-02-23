@@ -69,15 +69,18 @@ class SeederExec extends \Strukt\Console\Command{
 
 			foreach($files as $ver=>$cls){
 
-				$reflCls = new \ReflectionClass(sprintf("%s%s", $cls, $ver));
-				$seeder = $reflCls->newInstance();
+				if(!preg_match("/.*_.*/", $cls)){ //Ignore files with underscore
 
-				if($action == "up")
-					$seeder->up($conn);
-				elseif($action == "down")
-					$seeder->down($conn);
-				else
-					throw new \Exception(sprintf("Invalid action: %s!", $action));		
+					$reflCls = new \ReflectionClass(sprintf("%s%s", $cls, $ver));
+					$seeder = $reflCls->newInstance();
+
+					if($action == "up")
+						$seeder->up($conn);
+					elseif($action == "down")
+						$seeder->down($conn);
+					else
+						throw new \Exception(sprintf("Invalid action: %s!", $action));
+				}		
 			}
 		}
 		else throw new \Exception(sprintf("%s seeder(s) not found!", ucfirst($name)));
