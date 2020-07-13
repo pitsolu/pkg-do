@@ -1,5 +1,5 @@
 {
-    "name": "strukt/do",
+    "name": "strukt/pkg-do",
     "description": "Strukt + DoctrineORM",
     "type": "strukt-module",
     "require": {
