@@ -5,7 +5,7 @@
     "require": {
 
         "doctrine/orm": "^2.5",
-        "doctrine/migrations": "^1.5",
+        "doctrine/migrations": "^1.6",
         "cobaia/monologdoctrine": "v1.0",
         "portphp/spreadsheet": "^1.0@dev",
         "symfony/serializer": "^5.0@dev"
