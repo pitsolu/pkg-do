@@ -16,10 +16,11 @@ Project `strukt/pkg-do` is a `strukt` module. It utilizes:
 
 ### Prerequisite
 
-Install and `console generate:app yourappname` also use command below:
+Install `strukt/strukt` and generate application also use commands below:
 
 ```
-console create-project strukt/strukt:dev-master --prefer-dist
+composer create-project strukt/strukt:dev-master --prefer-dist
+console generate:app yourappname
 ```
 
 ### Installation
