@@ -18,7 +18,7 @@ Project `strukt/pkg-do` is a `strukt` module. It utilizes:
 
 Install `strukt/strukt` and generate application also use commands below:
 
-```
+```sh
 composer create-project strukt/strukt:dev-master --prefer-dist
 console generate:app yourappname
 ```
@@ -27,7 +27,7 @@ console generate:app yourappname
 
 Install, publish and create configuration for `strukt/pkg-do`:
 
-```
+```sh
 composer require strukt/pkg-do
 composer publish:package strukt/pkg-do
 ```
