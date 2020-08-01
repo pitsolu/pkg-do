@@ -9,6 +9,11 @@ use Doctrine\ORM\QueryBuilder;
 
 class EntityManagerAdapter extends AbstractProvider implements ProviderInterface{
 
+	public function __construct(){
+
+		//
+	}
+
 	public function register(){
 
 		/**

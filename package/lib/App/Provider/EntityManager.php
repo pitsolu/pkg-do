@@ -16,6 +16,11 @@ use Strukt\Env;
 
 class EntityManager extends AbstractProvider implements ProviderInterface{
 
+	public function __construct(){
+
+		//
+	}
+
 	public function register(){
 
 		try{

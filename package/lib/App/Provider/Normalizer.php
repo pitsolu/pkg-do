@@ -14,6 +14,11 @@ use App\Service\Normalizer\DateTime as DateTimeNormalizer;
 
 class Normalizer extends AbstractProvider implements ProviderInterface{
 
+	public function __construct(){
+
+		//
+	}
+
 	public function register(){
 
 		$this->core()->set("app.service.normalizer", new class{

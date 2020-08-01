@@ -11,6 +11,11 @@ use Strukt\Env;
 
 class Logger extends AbstractProvider implements ProviderInterface{ 
 
+	public function __construct(){
+
+		//
+	}
+
 	public function register(){
 
 		$this->core()->set("app.service.logger", new Event(function(
