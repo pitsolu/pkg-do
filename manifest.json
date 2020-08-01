@@ -12,6 +12,7 @@
 		"lib/App/Service/Normalizer/DateTime.php",
 		"lib/App/Service/Seeder/Json.php",
 		"lib/App/Service/Seeder/Xls.php",
+		"lib/App/Service/Logger/Monologer.php",
 		"lib/App/Contract/AbstractMigration.php",
 		"lib/App/Contract/AbstractSeeder.php",
 		"lib/App/Contract/CoreTraits.php",
