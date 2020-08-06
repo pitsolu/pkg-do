@@ -10,6 +10,7 @@ use Strukt\Generator\Compiler\Configuration;
 use Strukt\Generator\Compiler\Runner as Compiler;
 use Strukt\Env;
 use Strukt\Fs;
+use Strukt\Templator;
 
 /**
 * generate:migration  Doctrine Generate Migration
@@ -35,34 +36,14 @@ class GenerateMigration extends \Strukt\Console\Command{
 
 		try{
 
-			// $tplMigration = Fs::cat("tpl/sgf/database/schema/Schema/Migration/Version_.sgf");
 			$tplMigration = Fs::cat(Env::get("migration_sgf"));
-			        
-			// print_r($tplMigration);
 
-			$parser = new Parser(str_replace("__VER__", $name, $tplMigration));
-
-			$config = new Configuration();
-			$config->setExcludedMethodParamTypes(array(
-
-				"string",
-				"integer",
-				"double",
-				"float"
-			));
-			
-			$compiler = new Compiler($parser, $config);
-
-			$dump = sprintf("<?php\n%s", $compiler->compile());
-
-			// print_r($dump);
-
-			// \Strukt\Fs::touchWrite(sprintf("database/schema/Schema/Migration/Version%s.php", ucfirst($name)), $dump);
+			$class = Templator::create($tplMigration, array("ver"=>$name));
 
 			\Strukt\Fs::touchWrite(sprintf("%s/Version%s.php", 
 											Env::get("migration_home"), 
 											ucfirst($name)), 
-									$dump);
+									$class);
 		}
 		catch(\Exception $e){
 
