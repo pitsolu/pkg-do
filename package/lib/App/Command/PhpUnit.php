@@ -32,7 +32,7 @@ class PhpUnit extends \Strukt\Console\Command{
 		$class = $in->get("class");	 
 		$method = $in->get("method");	 	
 
-		$core = Registry::getInstance()->get("core");
+		$core = Registry::getSingleton()->get("core");
 
 		$suite = new TestSuite();
 

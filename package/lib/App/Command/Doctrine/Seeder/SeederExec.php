@@ -24,7 +24,7 @@ class SeederExec extends \Strukt\Console\Command{
 
 	public function execute(Input $in, Output $out){
 
-		$registry = Registry::getInstance();
+		$registry = Registry::getSingleton();
 
 		$conn = $registry->get("app.em")->getConnection();
 

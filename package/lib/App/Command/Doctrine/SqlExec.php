@@ -24,7 +24,7 @@ class SqlExec extends \Strukt\Console\Command{
 
     public function execute(Input $in, Output $out){
 
-        $registry = \Strukt\Core\Registry::getInstance();
+        $registry = \Strukt\Core\Registry::getSingleton();
 
         $conn = $registry->get("app.em")->getConnection();
 

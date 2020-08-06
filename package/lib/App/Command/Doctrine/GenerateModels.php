@@ -37,7 +37,7 @@ class GenerateModels extends \Strukt\Console\Command{
 
 			try{
 
-				$registry = Registry::getInstance();
+				$registry = Registry::getSingleton();
 
 				$em = $registry->get("app.em");
 
