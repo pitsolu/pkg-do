@@ -3,7 +3,7 @@
 namespace App\Service\Seeder;
 
 use Strukt\Fs;
-use Strukt\Util\Json as JsonUtil;
+use Strukt\Type\Json as JsonUtil;
 use Strukt\Contract\AbstractCore;
 
 class Json extends AbstractCore{
