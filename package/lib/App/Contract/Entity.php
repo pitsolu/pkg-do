@@ -4,7 +4,7 @@ namespace App\Contract;
 
 use Symfony\Component\Inflector\Inflector;
 use Strukt\Contract\AbstractCore;
-use Strukt\Util\Str;
+use Strukt\Type\Str;
 use Strukt\Raise;
 
 
