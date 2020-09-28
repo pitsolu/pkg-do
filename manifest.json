@@ -8,6 +8,7 @@
 		"lib/App/Provider/EntityManager.php",
 		"lib/App/Provider/Logger.php",
 		"lib/App/Provider/EntityManagerAdapter.php",
+		"lib/App/Provider/SchemaMeta.php",
 		"lib/App/Provider/Normalizer.php",
 		"lib/App/Service/Normalizer/DateTime.php",
 		"lib/App/Service/Seeder/Json.php",
