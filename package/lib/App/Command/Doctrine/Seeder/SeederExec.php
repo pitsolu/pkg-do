@@ -62,10 +62,7 @@ class SeederExec extends \Strukt\Console\Command{
 
 		if(!empty($files)){
 
-			if($action == "up")
-				ksort($files);
-			elseif($action == "down")
-				krsort($files);
+			ksort($files);
 
 			foreach($files as $ver=>$cls){
 
