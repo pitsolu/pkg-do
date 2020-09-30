@@ -5,6 +5,7 @@ namespace App\Provider;
 use Strukt\Contract\AbstractProvider;
 use Strukt\Contract\AbstractService;
 use Strukt\Contract\ProviderInterface;
+use Doctrine\ORM\QueryBuilder;
 
 /**
 * SchemaMeta
@@ -24,20 +25,18 @@ class SchemaMeta extends AbstractProvider implements ProviderInterface{
 		$this->core()->set("app.sm", new class extends AbstractService{
 
 			private $sm;
+			private $conn;
 
 			public function __construct(){
 
-				$this->sm = $this->em()->getConnection()->getSchemaManager();
+				$this->conn = $this->em()->getConnection();
+
+				$this->sm = $this->conn->getSchemaManager();
 			}
 
-			public function tables($db = null){
+			public function database(){
 
-				$tbls = $this->sm->listTables($db);
-
-				foreach($tbls as $tbl)
-					$tbls_all[] = $tbl->getName();
-
-				return $tbls_all;
+				return $this->conn->getDatabase();
 			}
 
 			public function databases(){
@@ -45,10 +44,22 @@ class SchemaMeta extends AbstractProvider implements ProviderInterface{
 				return $this->sm->listDatabases();
 			}
 
+			public function tables($db = null){
+
+				$tbls = $this->sm->listTables($db);
+
+				$tbls_all = [];				
+				foreach($tbls as $tbl)
+					$tbls_all[] = $tbl->getName();
+
+				return $tbls_all;
+			}
+
 			public function columns($table){
 
 				$cols = $this->sm->listTableColumns($table);
 
+				$cols_all = [];
 				foreach($cols as $name => $col){
 
 					$raw_col = $col->toArray();
@@ -65,6 +76,7 @@ class SchemaMeta extends AbstractProvider implements ProviderInterface{
 
 				$fkeys = $this->sm->listTableForeignKeys($table);
 
+				$fkeys_all = [];
 				foreach($fkeys as $fk){
 
 					$fkeys_all[] = array(
@@ -83,6 +95,7 @@ class SchemaMeta extends AbstractProvider implements ProviderInterface{
 
 				$indexes = $this->sm->listTableIndexes($table);
 
+				$indexes_all = [];
 				foreach($indexes as $index){
 
 					$indexes_all[] = array(
