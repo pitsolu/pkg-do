@@ -2,9 +2,11 @@
 
 namespace App\Contract;
 
-use Symfony\Component\Inflector\Inflector;
+// use Symfony\Component\Inflector\Inflector;
+use Symfony\Component\String\Inflector\EnglishInflector;
 use Strukt\Contract\AbstractCore;
 use Strukt\Type\Str;
+use Strukt\Type\Arr;
 use Strukt\Raise;
 
 
@@ -36,7 +38,9 @@ abstract class Entity extends AbstractCore{
 
 			$foreignCls = (string)$funcName->replaceFirst("get","");
 
-			$foreignSigCls = new Str(Inflector::singularize($foreignCls));
+			$manySingulars = Arr::create(EnglishInflector::singularize($foreignCls));
+
+			$foreignSigCls = new Str($manySingulars->current()->yield());
 
 			$repo = $da->repo($foreignSigCls);
 
