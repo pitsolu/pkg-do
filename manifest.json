@@ -2,6 +2,7 @@
 	"package":"pkg-do",
 	"files":[
 
+		"cfg/db.ini",
 		"database/schema/Schema/Migration/Version20170630235421.php",
 		"database/seeder/Seed/User20180626221519.php",
 		"database/seeder/Seed/Role20180626221244.php",
