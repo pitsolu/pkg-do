@@ -4,8 +4,7 @@
     "type": "strukt-module",
     "require": {
 
-        "doctrine/orm": "^2.5",
-        "doctrine/migrations": "v3.0.1",
+        "doctrine/migrations": "3.0.1",
         "monolog/monolog": ">= 1.2.1",
         "portphp/spreadsheet": "^1.0@dev",
         "symfony/serializer": "v4.4.10"
