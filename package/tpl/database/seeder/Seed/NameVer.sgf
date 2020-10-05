@@ -1,0 +1,17 @@
+<?php
+namespace Seed;
+
+use Doctrine\DBAL\Connection;
+
+class {{NameVer}}{
+
+	public function up(Connection $conn){
+
+		//todo	
+	}
+
+	public function down(Connection $conn){
+
+		//todo	
+	}
+}
