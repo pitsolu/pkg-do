@@ -6,11 +6,19 @@ use Strukt\Console\Input;
 use Strukt\Console\Output;
 use Strukt\Console\Color;
 use Strukt\Env;
+use Strukt\Raise;
 use Strukt\Core\Registry;
 
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
-use Doctrine\DBAL\Migrations\Migration;
-use Doctrine\DBAL\Migrations\OutputWriter;
+use Doctrine\Migrations\Configuration\Configuration;
+use Doctrine\Migrations\Configuration\Migration\ExistingConfiguration;
+use Doctrine\Migrations\Configuration\Connection\ExistingConnection;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration;
+use Doctrine\Migrations\MigratorConfiguration;
+
+use Doctrine\Migrations\Exception\NoMigrationsFoundWithCriteria;
+use Doctrine\Migrations\Exception\NoMigrationsToExecute;
+use Doctrine\Migrations\Exception\UnknownMigrationVersion;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
 /**
@@ -25,92 +33,102 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 *      version     (Optional) The version number (YYYYMMDDHHMMSS) or alias (first, prev, next, 
 *								latest) to migrate to. default:latest
 */
-class MigrateExec extends \Strukt\Console\Command{
+class MigrateExec extends \App\Contract\AbstractCommand{
 
 	public function execute(Input $in, Output $out){
 
-		$versionAlias = $in->get("version");
+		$verAlias = $in->get("version");
 
-		if(empty($versionAlias))
-			$versionAlias = "latest";
+		if(empty($verAlias))
+			$verAlias = "latest";
 
 		$message = null;
 
 		try{
 
-			$registry = Registry::getSingleton();
+			$connection = $this->core()->get("app.em")->getConnection();
 
-			$em = $registry->get("app.em");
+			$cfg = new Configuration($connection);
+			$cfg->addMigrationsDirectory(Env::get("migration_ns"), Env::get("migration_home"));
+			$cfg->setAllOrNothing(true);
+			$cfg->setCheckDatabasePlatform(false);
 
-			$outputWriter = new OutputWriter(function($msg) use ($out){
+			$storeCfg = new TableMetadataStorageConfiguration();
+			$storeCfg->setTableName('doctrine_migration_versions');
 
-				$formatter = new OutputFormatter();
-        		$formatter->setDecorated(true);
+			$cfg->setMetadataStorageConfiguration($storeCfg);
 
-				$out->add($formatter->format($msg));
-			});
+			$depFactory = DependencyFactory::fromConnection(
+			    new ExistingConfiguration($cfg),
+			    new ExistingConnection($connection)
+			);
 
-			$conf = new Configuration($em->getConnection(), $outputWriter);
-			$conf->setMigrationsNamespace(Env::get("migration_ns"));
-			$conf->setMigrationsDirectory(Env::get("migration_home"));
+			$depFactory->getMetadataStorage()->ensureInitialized();
 
-			$version = $conf->resolveVersionAlias($versionAlias);
+	        $migRepo = $depFactory->getMigrationRepository();
 
-	        if ($version === null){
+	        if (count($migRepo->getMigrations()) === 0){
 
-	            if($versionAlias == 'prev')	                
-	                throw new \Exception("Already at first version");
+	            new Raise(sprintf(
 
-	            if($versionAlias == 'next')
-	            	throw new \Exception("Already at latest version.");
-
-	            throw new \Exception(sprintf("Unknown version: %s", $versionAlias));
+	                'The version "%s" couldn\'t be reached, there are no registered migrations.',
+	                $verAlias
+	            ));
 	        }
 
-			$executedMigrations = $conf->getMigratedVersions();
-        	$availableMigrations = $conf->getAvailableVersions();
-        	$executedUnavailableMigrations = array_diff($executedMigrations, $availableMigrations);
+	        try {
 
-	        if (!empty($executedUnavailableMigrations)) {
+	            $version = $depFactory->getVersionAliasResolver()->resolveVersionAlias($verAlias);
+	        } 
+	        catch (UnknownMigrationVersion $e) {
 
-	            $out->add(sprintf(Color::write("yellow","WARNING! You have %s previously executed migrations in the database that are not registered migrations.'"),
-	                count($executedUnavailableMigrations)
-	            ));
+	            new Raise(sprintf('Unknown version: %s', OutputFormatter::escape($verAlias)));
+	        } 
+	        catch (NoMigrationsToExecute|NoMigrationsFoundWithCriteria $e) {
 
-	            foreach ($executedUnavailableMigrations as $executedUnavailableMigration) {
+	            return $this->exitForAlias($verAlias, $depFactory, $out);
+	        }
+
+	        $planCalc = $depFactory->getMigrationPlanCalculator();
+	        $statusCalc = $depFactory->getMigrationStatusCalculator();
+	        $execUnavailMigs = $statusCalc->getExecutedUnavailableMigrations();
+
+	        if (count($execUnavailMigs) !== 0) {
+
+	        	$out->add(sprintf(Color::write("red","WARN: You have %s previously executed migrations in the database that are not registered migrations.'"),
+		                count($execUnavailMigs)
+		        ));
+
+	            foreach ($execUnavailMigs->getItems() as $exeUnavailMig) {
 
 	                $out->add(sprintf(Color::write("yellow","    >> %s (").Color::write("yellow", "%s)"),
-	                    $conf->getDateTime($executedUnavailableMigration),
-	                    $executedUnavailableMigration
+	                    $exeUnavailMig->getExecutedAt() !== null
+	                        ? $exeUnavailMig->getExecutedAt()->format('Y-m-d H:i:s')
+	                        : null,
+	                    $exeUnavailMig->getVersion()
 	                ));
 	            }
 
-	            $question = 'Are you sure you wish to continue? (y/n)';
-	            $ans = $in->getInput($question);
-
-	            if(!in_array(trim(strtolower($ans)), array("y","yes", "")))
-	            	throw new Exception("Migration cancelled");
+		        $ans = $in->getInput('Are you sure you wish to continue? (y/n)');
+		        if(!in_array(trim(strtolower($ans)), array("y","yes", "")))
+		       		new Raise("Migration cancelled");
 	        }
 
-			$dryRun = false;
-			$timeAllqueries = true;
+	        $plan = $planCalc->getPlanUntilVersion($version);
 
-			$migration = new Migration($conf);
-			$result = $migration->migrate($version, $dryRun, $timeAllqueries, function() use ($in){
+	        if (count($plan) === 0) {
+	            $this->exitForAlias($verAlias, $depFactory, $out);
+	        }
 
-	            $question = 'WARNING! You are about to execute a database migration'
-			                . ' that could result in schema changes and data lost.'
-			                . ' Are you sure you wish to continue? (y/n)';
+	        $migrator = $depFactory->getMigrator();
+	        $sql = $migrator->migrate($plan, (new MigratorConfiguration())
+										            ->setDryRun(false)
+										            ->setTimeAllQueries(true)
+										            ->setAllOrNothing(true));
 
-	            $ans = $in->getInput($question);
-
-	            $continue = false;
-	            if(in_array(trim(strtolower($ans)), array("y","yes", "")))
-	            	$continue = true;
-
-	            return $continue;
-	        });
-		}
+            $writer = $depFactory->getQueryWriter();
+            $writer->write("php://stdout", $plan->getDirection(), $sql);
+	    }
 		catch(\Exception $e){
 
 			$message = $e->getMessage();
@@ -119,4 +137,27 @@ class MigrateExec extends \Strukt\Console\Command{
 		if(!is_null($message))
 			throw new \Exception($message);
 	}
+
+	private function exitForAlias(string $verAlias, DependencyFactory $depFactory, Output $out){
+
+        $version = (string) $depFactory->getVersionAliasResolver()->resolveVersionAlias('current');
+
+        // Allow meaningful message when latest version already reached.
+        if (in_array($verAlias, ['current', 'latest', 'first'], true)) {
+
+            $out->add(sprintf('Already at the %s version ("%s")', $verAlias, $version));
+        } 
+        elseif (in_array($verAlias, ['next', 'prev'], true) || strpos($verAlias, 'current') === 0) {
+
+            new Raise(sprintf( 'The version "%s" couldn\'t be reached, you are at version "%s"',
+
+            	$verAlias,
+                $version
+            ));
+        } 
+        else {
+
+            $out->add(sprintf('You are already at version "%s"', (string) $version));
+        }
+    }
 }
