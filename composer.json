@@ -4,6 +4,7 @@
     "type": "strukt-module",
     "require": {
 
+        "doctrine/orm":"v2.7.3",
         "doctrine/migrations": "3.0.1",
         "monolog/monolog": ">= 1.2.1",
         "portphp/spreadsheet": "^1.0@dev",

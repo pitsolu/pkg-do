@@ -16,6 +16,7 @@
 		"lib/App/Service/Logger/Monologer.php",
 		"lib/App/Contract/AbstractMigration.php",
 		"lib/App/Contract/AbstractSeeder.php",
+		"lib/App/Contract/AbstractTestCase.php",
 		"lib/App/Contract/Entity.php",
 		"lib/App/Command/Doctrine/SqlExec.php",
 		"lib/App/Command/Doctrine/Migration/GenerateMigration.php",
