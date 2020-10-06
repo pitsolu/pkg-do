@@ -27,7 +27,7 @@
 		"lib/App/Command/Doctrine/Seeder/SeederJson.php",
 		"lib/App/Command/Doctrine/Seeder/SeederExec.php",
 		"lib/App/Package/PkgDo.php",
-		"tpl/database/schema/Schema/Migration/Version_.sgf",
-		"tpl/database/seeder/Seed/NameVer.sgf"
+		"tpl/sgf/database/schema/Schema/Migration/Version_.sgf",
+		"tpl/sgf/database/seeder/Seed/NameVer.sgf"
 	]
 }
