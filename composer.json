@@ -21,5 +21,9 @@
             "email": "pitsolu@gmail.com"
         }
     ],
+    "autoload": {
+
+        "psr-0": { "Strukt\\": "src/"}
+    },
     "minimum-stability": "dev"
 }
