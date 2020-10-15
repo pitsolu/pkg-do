@@ -59,4 +59,9 @@ class PkgDo implements Pkg{
 
 		return null;
 	}
+
+	public function isInstalled(){
+
+		return class_exists(\App\Contract\Entity::class);
+	}
 }
