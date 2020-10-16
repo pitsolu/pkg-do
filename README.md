@@ -28,8 +28,8 @@ console generate:app yourappname
 Install, publish and create configuration for `strukt/pkg-do`:
 
 ```sh
-composer require strukt/pkg-do
-composer publish:package strukt/pkg-do
+composer require strukt/pkg-do:dev-master
+composer publish:package pkg-do
 ```
 
 ### Database Configuration File
@@ -79,7 +79,7 @@ Example:
 
 ```sh
 >>> ls
-Variables: $core, $da, $registry
+Variables: $core, $da, $em, $sm, $registry
 >>> $core->get("au.ctr.User")->getAll()
 => "AuthModule\Controller\User::getAll Not Yet Implemented!"
 >>> $da->get("User")->findAll() #Doctrine Adapter
