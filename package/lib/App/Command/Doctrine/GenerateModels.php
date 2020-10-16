@@ -13,6 +13,8 @@ use Doctrine\ORM\Tools\Console\MetadataFilter;
 use Doctrine\ORM\Mapping\Driver\DatabaseDriver;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 
+use App\Contract\Entity;
+
 /**
 * generate:models  Doctrine Generate Models
 * 
@@ -76,7 +78,7 @@ class GenerateModels extends \Strukt\Console\Command{
 				// print_r($metadata);exit;
 
 				$generator = new EntityGenerator();
-				$generator->setClassToExtend(sprintf("\%s", Env::get("entity_ns")));
+				$generator->setClassToExtend(Entity::class);
 				$cme = new ClassMetadataExporter();
 				$exporter = $cme->getExporter("annotation", Env::get("rel_appsrc_dir"));
 				$metadata = MetadataFilter::filter($metadata, $filter);
@@ -93,7 +95,7 @@ class GenerateModels extends \Strukt\Console\Command{
 			if(empty($message)){
 
 				$generator = new EntityGenerator();
-				$generator->setClassToExtend(sprintf("\%s", Env::get("entity_ns")));
+				$generator->setClassToExtend(Entity::class);
 				$generator->setGenerateAnnotations(true);
 				$generator->setGenerateStubMethods(true);
 				$generator->setRegenerateEntityIfExists(true);
