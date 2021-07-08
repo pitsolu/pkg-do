@@ -43,10 +43,10 @@ class SeederExec extends \Strukt\Console\Command{
 			}, explode("_", $name)));
 
 			// $seeders = glob(sprintf("database/seeder/Seed/%s*", $name));
-			$seeders = glob(sprintf("%s/%s*.php", Env::get("seeder_dir"), $name));
+			$seeders = glob(sprintf("%s/%s*.php", Env::get("seeder_home"), $name));
 		}
 		else
-			$seeders = glob(sprintf("%s/*.php", Env::get("seeder_dir")));
+			$seeders = glob(sprintf("%s/*.php", Env::get("seeder_home")));
 
 		foreach($seeders as $seeder){
 
@@ -56,6 +56,8 @@ class SeederExec extends \Strukt\Console\Command{
 									array("", "","\\"), $seeder);
 
 			list($cls, $ver) = preg_split("/(?<=[a-z])(?=[0-9]+)/i", ltrim($seeder, "\\"));
+
+			// print_r(array($cls, $ver));exit;
 
 			$files[$ver] = $cls;
 		}
@@ -68,7 +70,8 @@ class SeederExec extends \Strukt\Console\Command{
 
 				if(!preg_match("/.*_.*/", $cls)){ //Ignore files with underscore
 
-					$reflCls = new \ReflectionClass(sprintf("%s%s", $cls, $ver));
+					$reflCls = new \ReflectionClass(sprintf("%s\%s%s", Env::get("seeder_ns"), 
+																		$cls, $ver));
 					$seeder = $reflCls->newInstance();
 
 					if($action == "up")
