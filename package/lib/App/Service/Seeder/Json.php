@@ -125,7 +125,10 @@ class Json extends AbstractCore{
 			if(!empty($content["generic"]))
 				foreach($content["generic"] as $key=>$val)
 					if(!in_array($key, array_keys($row)))
-						$row[$key] = $val;
+						if($val == "_")
+							$row[$key] = (new \DateTime())->format("Y-m-d");
+						else
+							$row[$key] = $val;
 
 			//setting.json
 			// if(in_array("value", array_keys($row)))
